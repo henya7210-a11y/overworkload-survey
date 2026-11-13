@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>員工身心健康與工作負荷評估表</title>
+    <style>
+        body { font-family: "Microsoft JhengHei", sans-serif; max-width: 780px; margin: 20px auto; padding: 15px; background: #f0f4f8; color: #333; line-height: 1.5; }
+        .header-card { background: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border-top: 6px solid #2980b9; margin-bottom: 20px; }
+        .header-card h2 { margin-top: 0; color: #2c3e50; font-size: 22px; }
+        .header-card p { color: #555; font-size: 14px; margin-bottom: 0; }
+        .card { background: #fff; padding: 22px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); margin-bottom: 20px; }
+        h3 { background: #2c3e50; color: white; padding: 10px 14px; border-radius: 5px; font-size: 16px; margin-top: 0; margin-bottom: 18px; }
+        h3.teal { background: #16a085; }
+        h3.blue { background: #2980b9; }
+        h3.purple { background: #8e44ad; }
+        h3.orange { background: #d35400; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        .form-group { margin-bottom: 16px; }
+        label.title { display: block; font-weight: bold; margin-bottom: 6px; font-size: 15px; color: #222; }
+        .req { color: #e74c3c; margin-left: 3px; }
+        input[type="text"], input[type="date"], select, textarea { width: 100%; padding: 9px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 14px; }
+        .checkbox-group, .radio-group { display: flex; flex-direction: column; gap: 8px; margin-top: 6px; }
+        .checkbox-group label, .radio-group label { font-weight: normal; font-size: 14px; display: flex; align-items: flex-start; gap: 8px; cursor: pointer; }
+        input[type="checkbox"], input[type="radio"] { margin-top: 4px; transform: scale(1.1); }
+        
+        /* 生活習慣與行內輸入自定義排版 */
+        .habit-row { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; font-size: 14px; background: #fafafa; padding: 10px; border-radius: 6px; border: 1px solid #eee; }
+        .habit-row input[type="text"] { width: 70px; display: inline-block; padding: 4px 6px; text-align: center; font-size: 14px; }
+        .habit-row input[type="radio"] { margin-top: 0; }
+
+        .inline-input-row { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+        .inline-input-row input[type="text"] { flex: 1; min-width: 200px; padding: 5px 8px; font-size: 14px; display: inline-block; }
+
+        /* 量表表格樣式 */
+        .matrix-wrapper { overflow-x: auto; margin-top: 8px; }
+        table.matrix { width: 100%; border-collapse: collapse; min-width: 550px; font-size: 14px; }
+        table.matrix th, table.matrix td { border: 1px solid #e0e0e0; padding: 10px 8px; text-align: center; }
+        table.matrix th { background: #f8f9fa; color: #333; font-weight: bold; }
+        table.matrix td:first-child { text-align: left; width: 42%; font-weight: 500; }
+        table.matrix tr:nth-child(even) { background: #fafafa; }
+
+        .sub-note { font-size: 13px; color: #666; margin-top: 4px; }
+        button { width: 100%; background: #2980b9; color: white; border: none; padding: 15px; font-size: 18px; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.2s; }
+        button:hover { background: #1f6391; }
+        button:disabled { background: #95a5a6; cursor: not-allowed; }
+        @media (max-width: 600px) { .grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+    <div class="header-card">
+        <h2>員工身心健康與工作負荷評估表</h2>
+        <p>同仁您好：為關心您的身心健康！請花 3 分鐘依「近一個月」實際狀態填寫本評估表。<br>所有資料僅供醫護團隊提供健康關懷使用，嚴格保密，主管與人資皆無法調閱，請放心填答。</p>
+    </div>
+
+    <form id="surveyForm">
+        <!-- 分頁識別標籤 -->
+        <input type="hidden" name="formType" value="workload">
+
+        <!-- 第一部分：基本資料 -->
+        <div class="card">
+            <h3>第一部分：基本資料</h3>
+            <div class="grid">
+                <div class="form-group">
+                    <label class="title">填表日期 <span class="req">*</span></label>
+                    <input type="date" name="填表日期" required>
+                </div>
+                <div class="form-group">
+                    <label class="title">單位 <span class="req">*</span></label>
+                    <select name="單位" required>
+                        <option value="">請選擇單位</option>
+                        <option value="倉管課">倉管課</option>
+                        <option value="生產課">生產課</option>
+                        <option value="總務課">總務課</option>
+                        <option value="生管課">生管課</option>
+                        <option value="品保課">品保課</option>
+                        <option value="工務課">工務課</option>
+                        <option value="採購課">採購課</option>
+                        <option value="人資部">人資部</option>
+                        <option value="設計課">設計課</option>
+                        <option value="業務課">業務課</option>
+                        <option value="設備課">設備課</option>
+                        <option value="財務部">財務部</option>
+                        <option value="管理部">管理部</option>
+                        <option value="管理部-新營廠">管理部-新營廠</option>
+                        <option value="環安衛室">環安衛室</option>
+                        <option value="文管課">文管課</option>
+                        <option value="研發部">研發部</option>
+                        <option value="董事會">董事會</option>
+                        <option value="總經理室">總經理室</option>
+                        <option value="稽核室">稽核室</option>
+                        <option value="技術長室">技術長室</option>
+                        <option value="食品加工事業部">食品加工事業部</option>
+                        <option value="資訊課">資訊課</option>
+                        <option value="國貿採購課">國貿採購課</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="title">員工編號 <span class="req">*</span></label>
+                    <input type="text" name="員工編號" required>
+                </div>
+                <div class="form-group">
+                    <label class="title">姓名 <span class="req">*</span></label>
+                    <input type="text" name="姓名" required>
+                </div>
+                <div class="form-group">
+                    <label class="title">生日 <span class="req">*</span></label>
+                    <input type="date" name="生日" required>
+                </div>
+                <div class="form-group">
+                    <label class="title">生理性別 <span class="req">*</span></label>
+                    <select name="生理性別" required>
+                        <option value="">請選擇</option>
+                        <option value="男">男</option>
+                        <option value="女">女</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="title">聯絡分機 / 手機 <span class="req">*</span></label>
+                    <input type="text" name="聯絡分機或手機" required>
+                </div>
+                <div class="form-group">
+                    <label class="title">工作型態 <span class="req">*</span></label>
+                    <select name="工作型態" required>
+                        <option value="">請選擇工作型態</option>
+                        <option value="日班">日班</option>
+                        <option value="輪班">輪班</option>
+                        <option value="晚班">晚班</option>
+                        <option value="大夜班">大夜班</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="title">近 6 個月平均每月加班時數 <span class="req">*</span></label>
+                <div class="radio-group">
+                    <label><input type="radio" name="近6個月平均每月加班時數" value="45小時以下" required> 45小時以下</label>
+                    <label><input type="radio" name="近6個月平均每月加班時數" value="45 ~ 80小時"> 45 ~ 80小時</label>
+                    <label><input type="radio" name="近6個月平均每月加班時數" value="80小時以上"> 80小時以上</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- 第二部分：過去病史、家族史 -->
+        <div class="card">
+            <h3 class="teal">第二部分：過去病史、家族史</h3>
+            
+            <!-- 個人過去病史 -->
+            <div class="form-group">
+                <label class="title">個人過去病史（經醫師確定診斷，可複選）<span class="req">*</span></label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="個人過去病史" value="心臟循環系統疾病(如高血壓、心律不整)"> 心臟循環系統疾病(如高血壓、心律不整)</label>
+                    <label><input type="checkbox" name="個人過去病史" value="血脂肪異常"> 血脂肪異常</label>
+                    <label><input type="checkbox" name="個人過去病史" value="中樞神經系統疾病(如癲癇、脊椎疾病)"> 中樞神經系統疾病(如癲癇、脊椎疾病)</label>
+                    <label><input type="checkbox" name="個人過去病史" value="氣喘"> 氣喘</label>
+                    <label><input type="checkbox" name="個人過去病史" value="糖尿病"> 糖尿病</label>
+                    <label><input type="checkbox" name="個人過去病史" value="聽力損失"> 聽力損失</label>
+                    <label><input type="checkbox" name="個人過去病史" value="情感或心理疾病"> 情感或心理疾病</label>
+                    <label><input type="checkbox" name="個人過去病史" value="睡眠相關呼吸疾病(如睡眠呼吸中止症)"> 睡眠相關呼吸疾病(如睡眠呼吸中止症)</label>
+                    <label><input type="checkbox" name="個人過去病史" value="周邊神經系統疾病(如腕隧道症候群)"> 周邊神經系統疾病(如腕隧道症候群)</label>
+                    <label><input type="checkbox" name="個人過去病史" value="眼睛疾病(不含可矯正之近視或遠視)"> 眼睛疾病(不含可矯正之近視或遠視)</label>
+                    
+                    <!-- 改成帶有藥物名稱填寫的行 -->
+                    <label class="habit-row" style="background: transparent; border: none; padding: 0; margin-top: 4px;">
+                        <input type="checkbox" name="個人過去病史" value="長期服藥"> 長期服藥，藥物名稱：
+                        <input type="text" name="長期服藥藥物名稱" placeholder="請填寫藥物名稱" style="width: 220px; display: inline-block;">
+                    </label>
+
+                    <label><input type="checkbox" name="個人過去病史" value="以上皆無"> 以上皆無</label>
+                </div>
+                
+                <!-- 其他過往病史改成其他:________ -->
+                <div class="inline-input-row" style="margin-top: 10px;">
+                    <label style="font-weight: normal; font-size: 14px;">其他：</label>
+                    <input type="text" name="個人過去病史_其他" placeholder="請輸入其他病史（選填）">
+                </div>
+            </div>
+
+            <!-- 家族史 -->
+            <div class="form-group" style="margin-top: 20px;">
+                <label class="title">家族史（可複選）<span class="req">*</span></label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="家族史" value="家族中有中風病史"> 家族中有中風病史</label>
+                    <label><input type="checkbox" name="家族史" value="一等親內的家屬(父母、祖父母、子女)男性於55歲、女性於65歲前發生狹心症或心絞痛"> 一等親內的家屬(父母、祖父母、子女)男性於55歲、女性於65歲前發生狹心症或心絞痛</label>
+                    <label><input type="checkbox" name="家族史" value="以上皆無"> 以上皆無</label>
+                </div>
+                
+                <!-- 其他家族史改成其他:________ -->
+                <div class="inline-input-row" style="margin-top: 10px;">
+                    <label style="font-weight: normal; font-size: 14px;">其他：</label>
+                    <input type="text" name="家族史_其他" placeholder="請輸入其他家族史（選填）">
+                </div>
+            </div>
+        </div>
+
+        <!-- 第三部分：生活習慣史 -->
+        <div class="card">
+            <h3 class="blue">第三部分：生活習慣史</h3>
+            
+            <!-- 抽菸 -->
+            <div class="form-group">
+                <label class="title">抽菸 <span class="req">*</span></label>
+                <div class="radio-group">
+                    <label class="habit-row"><input type="radio" name="抽菸狀況" value="從未吸菸" required> 從未吸菸</label>
+                    <label class="habit-row"><input type="radio" name="抽菸狀況" value="偶爾吸(不是天天)"> 偶爾吸(不是天天)</label>
+                    <label class="habit-row">
+                        <input type="radio" name="抽菸狀況" value="每天吸"> (幾乎)每天吸，平均每天吸 <input type="text" name="抽菸_每天數量" placeholder="支/包"> 支，已吸菸 <input type="text" name="抽菸_年數" placeholder="年"> 年
+                    </label>
+                    <label class="habit-row">
+                        <input type="radio" name="抽菸狀況" value="已戒菸"> 已經戒菸，戒了 <input type="text" name="戒菸_年" placeholder="年"> 年 <input type="text" name="戒菸_月" placeholder="月"> 個月
+                    </label>
+                </div>
+            </div>
+
+            <!-- 檳榔 -->
+            <div class="form-group">
+                <label class="title">檳榔 <span class="req">*</span></label>
+                <div class="radio-group">
+                    <label class="habit-row"><input type="radio" name="檳榔狀況" value="從未吃檳榔" required> 從未吃檳榔</label>
+                    <label class="habit-row"><input type="radio" name="檳榔狀況" value="偶爾吃(不是天天)"> 偶爾吃(不是天天)</label>
+                    <label class="habit-row">
+                        <input type="radio" name="檳榔狀況" value="每天吃"> (幾乎)每天吃，平均每天吃 <input type="text" name="檳榔_每天數量" placeholder="顆"> 顆，已吃 <input type="text" name="檳榔_年數" placeholder="年"> 年
+                    </label>
+                    <label class="habit-row">
+                        <input type="radio" name="檳榔狀況" value="已戒檳榔"> 已經戒檳榔，戒了 <input type="text" name="戒檳榔_年" placeholder="年"> 年 <input type="text" name="戒檳榔_月" placeholder="月"> 個月
+                    </label>
+                </div>
+            </div>
+
+            <!-- 喝酒 -->
+            <div class="form-group">
+                <label class="title">喝酒 <span class="req">*</span></label>
+                <div class="radio-group">
+                    <label class="habit-row"><input type="radio" name="喝酒狀況" value="從未喝酒" required> 從未喝酒</label>
+                    <label class="habit-row"><input type="radio" name="喝酒狀況" value="偶爾喝(不是天天)"> 偶爾喝(不是天天)</label>
+                    <label class="habit-row">
+                        <input type="radio" name="喝酒狀況" value="每天喝"> (幾乎)每天喝，平均每週喝 <input type="text" name="喝酒_每周次數" placeholder="次"> 次，最常喝 <input type="text" name="喝酒_種類" placeholder="酒類" style="width: 90px;"> 酒，每次 <input type="text" name="喝酒_每次瓶數" placeholder="瓶/杯"> 瓶/杯
+                    </label>
+                    <label class="habit-row">
+                        <input type="radio" name="喝酒狀況" value="已戒酒"> 已經戒酒，戒了 <input type="text" name="戒酒_年" placeholder="年"> 年 <input type="text" name="戒酒_月" placeholder="月"> 個月
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- 第四部分：「過勞量表」自我評量 -->
+        <div class="card">
+            <h3 class="purple">第四部分：「過勞量表」自我評量</h3>
+            
+            <div class="form-group">
+                <label class="title">個人疲勞評估 <span class="req">*</span></label>
+                <div class="matrix-wrapper">
+                    <table class="matrix">
+                        <thead>
+                            <tr>
+                                <th>評估項目</th>
+                                <th>總是</th>
+                                <th>常常</th>
+                                <th>有時候</th>
+                                <th>不常</th>
+                                <th>從未</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1. 你常覺得疲勞嗎？</td>
+                                <td><input type="radio" name="個人疲勞_1常覺得疲勞" value="總是" required></td>
+                                <td><input type="radio" name="個人疲勞_1常覺得疲勞" value="常常"></td>
+                                <td><input type="radio" name="個人疲勞_1常覺得疲勞" value="有時候"></td>
+                                <td><input type="radio" name="個人疲勞_1常覺得疲勞" value="不常"></td>
+                                <td><input type="radio" name="個人疲勞_1常覺得疲勞" value="從未"></td>
+                            </tr>
+                            <tr>
+                                <td>2. 你常覺得身體上體力透支嗎？</td>
+                                <td><input type="radio" name="個人疲勞_2體力透支" value="總是" required></td>
+                                <td><input type="radio" name="個人疲勞_2體力透支" value="常常"></td>
+                                <td><input type="radio" name="個人疲勞_2體力透支" value="有時候"></td>
+                                <td><input type="radio" name="個人疲勞_2體力透支" value="不常"></td>
+                                <td><input type="radio" name="個人疲勞_2體力透支" value="從未"></td>
+                            </tr>
+                            <tr>
+                                <td>3. 你常覺得情緒上心力交瘁嗎？</td>
+                                <td><input type="radio" name="個人疲勞_3心力交瘁" value="總是" required></td>
+                                <td><input type="radio" name="個人疲勞_3心力交瘁" value="常常"></td>
+                                <td><input type="radio" name="個人疲勞_3心力交瘁" value="有時候"></td>
+                                <td><input type="radio" name="個人疲勞_3心力交瘁" value="不常"></td>
+                                <td><input type="radio" name="個人疲勞_3心力交瘁" value="從未"></td>
+                            </tr>
+                            <tr>
+                                <td>4. 你常會覺得，「我快要撐不下去了」嗎？</td>
+                                <td><input type="radio" name="個人疲勞_4快撐不下去" value="總是" required></td>
+                                <td><input type="radio" name="個人疲勞_4快撐不下去" value="常常"></td>
+                                <td><input type="radio" name="個人疲勞_4快撐不下去" value="有時候"></td>
+                                <td><input type="radio" name="個人疲勞_4快撐不下去" value="不常"></td>
+                                <td><input type="radio" name="個人疲勞_4快撐不下去" value="從未"></td>
+                            </tr>
+                            <tr>
+                                <td>5. 你常覺得精疲力竭嗎？</td>
+                                <td><input type="radio" name="個人疲勞_5精疲力竭" value="總是" required></td>
+                                <td><input type="radio" name="個人疲勞_5精疲力竭" value="常常"></td>
+                                <td><input type="radio" name="個人疲勞_5精疲力竭" value="有時候"></td>
+                                <td><input type="radio" name="個人疲勞_5精疲力竭" value="不常"></td>
+                                <td><input type="radio" name="個人疲勞_5精疲力竭" value="從未"></td>
+                            </tr>
+                            <tr>
+                                <td>6. 你常常覺得虛弱，好像快要生病了嗎？</td>
+                                <td><input type="radio" name="個人疲勞_6虛弱好像快生病" value="總是" required></td>
+                                <td><input type="radio" name="個人疲勞_6虛弱好像快生病" value="常常"></td>
+                                <td><input type="radio" name="個人疲勞_6虛弱好像快生病" value="有時候"></td>
+                                <td><input type="radio" name="個人疲勞_6虛弱好像快生病" value="不常"></td>
+                                <td><input type="radio" name="個人疲勞_6虛弱好像快生病" value="從未"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="title">工作疲勞評估 <span class="req">*</span></label>
+                <div class="matrix-wrapper">
+                    <table class="matrix">
+                        <thead>
+                            <tr>
+                                <th>評估項目</th>
+                                <th>總是</th>
+                                <th>常常</th>
+                                <th>有時候</th>
+                                <th>不常</th>
+                                <th>從未</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1. 你的工作會令人情緒上心力交瘁嗎？</td>
+                                <td><input type="radio" name="工作疲勞_1情緒心力交瘁" value="總是" required></td>
+                                <td><input type="radio" name="工作疲勞_1情緒心力交瘁" value="常常"></td>
+                                <td><input type="radio" name="工作疲勞_1情緒心力交瘁" value="有時候"></td>
+                                <td><input type="radio" name="工作疲勞_1情緒心力交瘁" value="不常"></td>
+                                <td><input type="radio" name="工作疲勞_1情緒心力交瘁" value="從未"></td>
+                            </tr>
+                            <tr>
+                                <td>2. 你的工作會讓你覺得快要累垮了嗎？</td>
+                                <td><input type="radio" name="工作疲勞_2快要累垮" value="總是" required></td>
+                                <td><input type="radio" name="工作疲勞_2快要累垮" value="常常"></td>
+                                <td><input type="radio" name="工作疲勞_2快要累垮" value="有時候"></td>
+                                <td><input type="radio" name="工作疲勞_2快要累垮" value="不常"></td>
+                                <td><input type="radio" name="工作疲勞_2快要累垮" value="從未"></td>
+                            </tr>
+                            <tr>
+                                <td>3. 你的工作會讓你覺得挫折嗎？</td>
+                                <td><input type="radio" name="工作疲勞_3覺得挫折" value="總是" required></td>
+                                <td><input type="radio" name="工作疲勞_3覺得挫折" value="常常"></td>
+                                <td><input type="radio" name="工作疲勞_3覺得挫折" value="有時候"></td>
+                                <td><input type="radio" name="工作疲勞_3覺得挫折" value="不常"></td>
+                                <td><input type="radio" name="工作疲勞_3覺得挫折" value="從未"></td>
+                            </tr>
+                            <tr>
+                                <td>4. 工作一整天之後，你覺得精疲力竭嗎？</td>
+                                <td><input type="radio" name="工作疲勞_4工作後精疲力竭" value="總是" required></td>
+                                <td><input type="radio" name="工作疲勞_4工作後精疲力竭" value="常常"></td>
+                                <td><input type="radio" name="工作疲勞_4工作後精疲力竭" value="有時候"></td>
+                                <td><input type="radio" name="工作疲勞_4工作後精疲力竭" value="不常"></td>
+                                <td><input type="radio" name="工作疲勞_4工作後精疲力竭" value="從未"></td>
+                            </tr>
+                            <tr>
+                                <td>5. 上班之前只要想到又要工作一整天，你就覺得沒力嗎？</td>
+                                <td><input type="radio" name="工作疲勞_5上班前覺得沒力" value="總是" required></td>
+                                <td><input type="radio" name="工作疲勞_5上班前覺得沒力" value="常常"></td>
+                                <td><input type="radio" name="工作疲勞_5上班前覺得沒力" value="有時候"></td>
+                                <td><input type="radio" name="工作疲勞_5上班前覺得沒力" value="不常"></td>
+                                <td><input type="radio" name="工作疲勞_5上班前覺得沒力" value="從未"></td>
+                            </tr>
+                            <tr>
+                                <td>6. 上班時你會覺得每一刻都很難熬嗎？</td>
+                                <td><input type="radio" name="工作疲勞_6每一刻很難熬" value="總是" required></td>
+                                <td><input type="radio" name="工作疲勞_6每一刻很難熬" value="常常"></td>
+                                <td><input type="radio" name="工作疲勞_6每一刻很難熬" value="有時候"></td>
+                                <td><input type="radio" name="工作疲勞_6每一刻很難熬" value="不常"></td>
+                                <td><input type="radio" name="工作疲勞_6每一刻很難熬" value="從未"></td>
+                            </tr>
+                            <tr>
+                                <td>7. 不工作的時候，你有足夠的精力陪朋友或家人嗎？</td>
+                                <td><input type="radio" name="工作疲勞_7足夠精力陪親友" value="總是" required></td>
+                                <td><input type="radio" name="工作疲勞_7足夠精力陪親友" value="常常"></td>
+                                <td><input type="radio" name="工作疲勞_7足夠精力陪親友" value="有時候"></td>
+                                <td><input type="radio" name="工作疲勞_7足夠精力陪親友" value="不常"></td>
+                                <td><input type="radio" name="工作疲勞_7足夠精力陪親友" value="從未"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="title">工作型態評估 - 不規律的工作 <span class="req">*</span></label>
+                <div class="sub-note">對預定之工作排程或工作內容經常性變更或無法預估、常屬於事前臨時通知狀況等。例如：工作時間安排，常為前一天或當天才被告知之情況。</div>
+                <div class="radio-group">
+                    <label><input type="radio" name="工作型態_不規律工作" value="是" required> 是</label>
+                    <label><input type="radio" name="工作型態_不規律工作" value="否"> 否</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="title">工作型態評估 - 經常出差的工作 <span class="req">*</span></label>
+                <div class="sub-note">經常性出差，其具有時差、無法休憩、休息或適當住宿、長距離自行開車或往返兩地而無法恢復疲勞狀況等。</div>
+                <div class="radio-group">
+                    <label><input type="radio" name="工作型態_經常出差" value="是" required> 是</label>
+                    <label><input type="radio" name="工作型態_經常出差" value="否"> 否</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="title">工作型態評估 - 伴隨精神緊張的工作（可複選）<span class="req">*</span></label>
+                <div class="sub-note">日常工作處於高壓力狀態，如經常負責會威脅自己或他人生命、財產的危險性工作, 處理高危險物質、需在一定期間內完成困難工作或處理客戶重大衝突或複雜的勞資紛爭等工作。</div>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="伴隨精神緊張的工作" value="否"> 否</label>
+                    <label><input type="checkbox" name="伴隨精神緊張的工作" value="經常負責會威脅自己或他人生命、財產的危險性工作"> 經常負責會威脅自己或他人生命、財產的危險性工作</label>
+                    <label><input type="checkbox" name="伴隨精神緊張的工作" value="有迴避危險責任的工作"> 有迴避危險責任的工作</label>
+                    <label><input type="checkbox" name="伴隨精神緊張的工作" value="關乎人命、或可能左右他人一生重大判決的工作"> 關乎人命、或可能左右他人一生重大判決的工作</label>
+                    <label><input type="checkbox" name="伴隨精神緊張的工作" value="處理高危險物質的工作"> 處理高危險物質的工作</label>
+                    <label><input type="checkbox" name="伴隨精神緊張的工作" value="可能造成社會龐大損失責任的工作"> 可能造成社會龐大損失責任的工作</label>
+                    <label><input type="checkbox" name="伴隨精神緊張的工作" value="有過多或過分嚴苛的限時工作"> 有過多或過分嚴苛的限時工作</label>
+                    <label><input type="checkbox" name="伴隨精神緊張的工作" value="需在一定的期間內（如交期等）完成的困難工作"> 需在一定的期間內（如交期等）完成的困難工作</label>
+                    <label><input type="checkbox" name="伴隨精神緊張的工作" value="負責處理同事或外部重大衝突或複雜的勞資紛爭"> 負責處理同事或外部重大衝突或複雜的勞資紛爭</label>
+                    <label><input type="checkbox" name="伴隨精神緊張的工作" value="無法獲得周遭理解或孤立無援狀況下的困難工作"> 無法獲得周遭理解或孤立無援狀況下的困難工作</label>
+                    <label><input type="checkbox" name="伴隨精神緊張的工作" value="負責複雜困難的開發業務、或公司重建等工作"> 負責複雜困難的開發業務、或公司重建等工作</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- 第五部分：心情溫度計 -->
+        <div class="card">
+            <h3 class="orange">第五部分：心情溫度計</h3>
+            <div class="form-group">
+                <label class="title">請您仔細回想一下，在最近這一星期中（包括今天），下列敘述讓您感到困擾或苦惱的程度？ <span class="req">*</span></label>
+                <div class="matrix-wrapper">
+                    <table class="matrix">
+                        <thead>
+                            <tr>
+                                <th>困擾敘述</th>
+                                <th>0分<br>(完全沒有)</th>
+                                <th>1分<br>(輕微)</th>
+                                <th>2分<br>(中等程度)</th>
+                                <th>3分<br>(厲害)</th>
+                                <th>4分<br>(非常厲害)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1. 感覺緊張不安</td>
+                                <td><input type="radio" name="心情_1緊張不安" value="0分(完全沒有)" required></td>
+                                <td><input type="radio" name="心情_1緊張不安" value="1分(輕微)"></td>
+                                <td><input type="radio" name="心情_1緊張不安" value="2分(中等程度)"></td>
+                                <td><input type="radio" name="心情_1緊張不安" value="3分(厲害)"></td>
+                                <td><input type="radio" name="心情_1緊張不安" value="4分(非常厲害)"></td>
+                            </tr>
+                            <tr>
+                                <td>2. 覺得容易苦惱或動怒</td>
+                                <td><input type="radio" name="心情_2苦惱或動怒" value="0分(完全沒有)" required></td>
+                                <td><input type="radio" name="心情_2苦惱或動怒" value="1分(輕微)"></td>
+                                <td><input type="radio" name="心情_2苦惱或動怒" value="2分(中等程度)"></td>
+                                <td><input type="radio" name="心情_2苦惱或動怒" value="3分(厲害)"></td>
+                                <td><input type="radio" name="心情_2苦惱或動怒" value="4分(非常厲害)"></td>
+                            </tr>
+                            <tr>
+                                <td>3. 感覺憂鬱、心情低落</td>
+                                <td><input type="radio" name="心情_3憂鬱心情低落" value="0分(完全沒有)" required></td>
+                                <td><input type="radio" name="心情_3憂鬱心情低落" value="1分(輕微)"></td>
+                                <td><input type="radio" name="心情_3憂鬱心情低落" value="2分(中等程度)"></td>
+                                <td><input type="radio" name="心情_3憂鬱心情低落" value="3分(厲害)"></td>
+                                <td><input type="radio" name="心情_3憂鬱心情低落" value="4分(非常厲害)"></td>
+                            </tr>
+                            <tr>
+                                <td>4. 覺得比不上別人</td>
+                                <td><input type="radio" name="心情_4覺得比不上別人" value="0分(完全沒有)" required></td>
+                                <td><input type="radio" name="心情_4覺得比不上別人" value="1分(輕微)"></td>
+                                <td><input type="radio" name="心情_4覺得比不上別人" value="2分(中等程度)"></td>
+                                <td><input type="radio" name="心情_4覺得比不上別人" value="3分(厲害)"></td>
+                                <td><input type="radio" name="心情_4覺得比不上別人" value="4分(非常厲害)"></td>
+                            </tr>
+                            <tr>
+                                <td>5. 睡眠困難，譬如難以入睡、易醒或早醒</td>
+                                <td><input type="radio" name="心情_5睡眠困難" value="0分(完全沒有)" required></td>
+                                <td><input type="radio" name="心情_5睡眠困難" value="1分(輕微)"></td>
+                                <td><input type="radio" name="心情_5睡眠困難" value="2分(中等程度)"></td>
+                                <td><input type="radio" name="心情_5睡眠困難" value="3分(厲害)"></td>
+                                <td><input type="radio" name="心情_5睡眠困難" value="4分(非常厲害)"></td>
+                            </tr>
+                            <tr>
+                                <td>＊有自殺的想法</td>
+                                <td><input type="radio" name="心情_附加_有自殺的想法" value="0分(完全沒有)" required></td>
+                                <td><input type="radio" name="心情_附加_有自殺的想法" value="1分(輕微)"></td>
+                                <td><input type="radio" name="心情_附加_有自殺的想法" value="2分(中等程度)"></td>
+                                <td><input type="radio" name="心情_附加_有自殺的想法" value="3分(厲害)"></td>
+                                <td><input type="radio" name="心情_附加_有自殺的想法" value="4分(非常厲害)"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" id="submitBtn">送出評估表</button>
+    </form>
+
+    <script>
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbwdepsMgE5FZwRO9T2O1CwG8_QyjRmS8GcucxnKeoy3V56Do-sPzqP5vByiqTCg3_vcfA/exec';
+        document.querySelector('input[name="填表日期"]').valueAsDate = new Date();
+
+        const form = document.getElementById('surveyForm');
+        const submitBtn = document.getElementById('submitBtn');
+
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+
+            // 檢查複選題是否至少勾選一項
+            const checkGroups = ['個人過去病史', '家族史', '伴隨精神緊張的工作'];
+            for (const groupName of checkGroups) {
+                const checked = form.querySelectorAll(`input[name="${groupName}"]:checked`);
+                if (checked.length === 0) {
+                    alert(`請至少勾選一項「${groupName}」（若無請勾選「以上皆無」或「否」）！`);
+                    return;
+                }
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = '資料傳送中，請稍候...';
+
+            const formData = new FormData(form);
+            const data = {};
+
+            // 處理所有欄位，將同名的複選框合併成逗號分隔文字
+            for (const [key, value] of formData.entries()) {
+                if (data[key] !== undefined) {
+                    data[key] = data[key] + ', ' + value;
+                } else {
+                    data[key] = value;
+                }
+            }
+
+            fetch(scriptURL, {
+                method: 'POST',
+                body: JSON.stringify(data),
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+            })
+            .then(res => res.json())
+            .then(() => {
+                alert('工作負荷與身心健康評估表送出成功！感謝您的填寫。');
+                form.reset();
+                document.querySelector('input[name="填表日期"]').valueAsDate = new Date();
+                submitBtn.disabled = false;
+                submitBtn.textContent = '送出評估表';
+            })
+            .catch(err => {
+                alert('送出失敗，請檢查網路連線或網址設定。');
+                submitBtn.disabled = false;
+                submitBtn.textContent = '送出評估表';
+            });
+        });
+    </script>
+</body>
+</html>
